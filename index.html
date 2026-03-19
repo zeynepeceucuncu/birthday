@@ -9,7 +9,7 @@
         body {
             background-color: #ffb6c1; /* Tatlı pembe arka plan */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Sayfanın kaymasını engeller, konfetileri gizler */
+            overflow: hidden; /* Sayfanın kaymasını engeller */
             margin: 0;
             padding: 0;
             display: flex;
@@ -20,8 +20,8 @@
             position: relative;
         }
 
-        /* --- Konfeti Canvas (Animasyon) --- */
-        #confettiCanvas {
+        /* --- Kalp Canvas (Animasyon) --- */
+        #heartCanvas {
             position: absolute;
             top: 0;
             left: 0;
@@ -35,7 +35,7 @@
         h1 {
             color: #d81b60;
             font-size: 3rem;
-            z-index: 10; /* En üstte */
+            z-index: 10;
             margin-bottom: 20px;
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
@@ -50,21 +50,22 @@
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            z-index: 10; /* En üstte */
+            z-index: 10;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: transform 0.2s, background-color 0.2s;
         }
         #clickMe:hover { background-color: #ff1493; }
         #clickMe:active { transform: scale(0.95); }
 
-        /* --- Zarf ve Büyütülmüş Kağıt Tasarımı (Corrected Layers) --- */
+        /* --- Gelişmiş Zarf Tasarımı (Kapalıdan Açığa) --- */
         #envelope-container {
             display: none; 
             position: relative;
             margin-top: 40px;
-            width: 380px; /* Zarfı metne sığması için daha da genişlettik */
-            height: 240px; /* Zarfın boyunu biraz uzattık */
-            z-index: 10; /* Main content level */
+            width: 380px; 
+            height: 240px; 
+            z-index: 10; 
+            perspective: 1000px; /* 3 Boyutlu açılma efekti için */
         }
 
         /* Katman 1: Zarfın Arka Paneli */
@@ -72,21 +73,21 @@
             position: absolute;
             bottom: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: #e69138; /* Koyu taba */
+            background-color: #e69138; 
             border-radius: 0 0 10px 10px;
-            z-index: 1; /* Envelope back */
+            z-index: 1; 
         }
 
         /* Katman 2: Mektup Kâğıdı (Ortada) */
         .paper {
             position: absolute;
-            bottom: 10px; /* Zarfın içinde başla */
+            bottom: 10px; 
             left: 2.5%;
             width: 95%;
-            height: 300px; /* METNİN SIĞMASI İÇİN KAĞIT UZATILDI */
+            height: 300px; 
             background-color: #fffaf0;
-            z-index: 2; /* Between back and front */
-            padding: 25px; /* Daha fazla iç boşluk */
+            z-index: 2; 
+            padding: 25px; 
             box-sizing: border-box;
             font-size: 1.05rem;
             line-height: 1.4;
@@ -94,115 +95,132 @@
             text-align: center;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 1.2s ease-in-out;
+            transition: transform 1.2s ease-in-out; /* Yavaşça süzülerek çıkma */
         }
 
-        /* Katman 3: Zarfın Ön Paneli (Üstte) */
+        /* Katman 3: Zarfın Ön Paneli (Alt Cep) */
         .envelope-front {
             position: absolute;
             bottom: 0; left: 0;
             width: 100%;
             height: 150px; 
-            z-index: 3; /* Top layer */
-            background-color: #f4a460; /* Açık taba */
+            z-index: 3; 
+            background-color: #f4a460; 
             border-radius: 0 0 10px 10px;
         }
-        
-        /* Zarfın ön kapağındaki katlama efekti (Düzeltildi) */
         .envelope-front::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 190px solid transparent; /* Half of 380px */
+            border-left: 190px solid transparent; 
             border-right: 190px solid transparent;
             border-top: 90px solid #e69138;
             z-index: 3;
         }
 
-        /* Zarf açılma animasyonu - Kağıt tam dışarı süzülsün */
-        .open-envelope .paper {
+        /* Katman 4: Zarfın Üst Kapağı (Açılıp kapanan kısım) */
+        .envelope-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 190px solid transparent;
+            border-right: 190px solid transparent;
+            border-top: 135px solid #d38332; /* Arkadan biraz daha koyu, kat yeri belli olsun */
+            z-index: 4; /* Kapalıyken en üstte */
+            transform-origin: top; /* Üst kısımdan katlanacak */
+            transition: transform 0.6s ease-in-out, z-index 0s 0.3s;
+        }
+
+        /* Animasyon 1: Kapağın Açılması */
+        .open-flap .envelope-flap {
+            transform: rotateX(180deg); /* Kapağı yukarı doğru çevirir */
+            z-index: 1; /* Açıldığında mektubun arkasında kalması için z-index düşer */
+        }
+
+        /* Animasyon 2: Mektubun Çıkması */
+        .pull-paper .paper {
             transform: translateY(-260px); 
         }
     </style>
 </head>
 <body>
 
-    <canvas id="confettiCanvas"></canvas>
+    <canvas id="heartCanvas"></canvas>
 
-    <h1> Rukoooo! 🎉</h1>
+    <h1> İyi ki Doğdun Rukoooo! 🎉</h1>
     <button id="clickMe">There is a message for you </button>
 
     <div id="envelope-container">
         <div class="envelope-back"></div>
-        <div class="paper" id="message-paper">
+        <div class="envelope-flap"></div> <div class="paper" id="message-paper">
             <b>Anneciiiiiiim,</b><br><br>
             Bilgisayar Mühendisi kızın olduğu belli olsun dedim:) Doğum günün kutlu olsunnn 💛 bize hep bayramdı bu sene tüm islam alemininkiyle çakıştı 😂<br><br>
-            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu anne hayat kaliten artardı 🤭 İyi ki Doğdun 🎂
+            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu anne , hayat kaliten artardı 🤭 İyi ki Doğdun 🎂
         </div>
         <div class="envelope-front"></div>
     </div>
 
     <script>
-        // JavaScript Canvas Konfeti Animasyonu (Aşağıdan Yukarı)
-        function startConfetti() {
-            const canvas = document.getElementById('confettiCanvas');
+        // --- Yavaş ve Zarif Kalp Animasyonu ---
+        function startHearts() {
+            const canvas = document.getElementById('heartCanvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
             const particles = [];
-            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            // Tatlı pembe ve kırmızı tonları
+            const colors = ['#ff4b72', '#ff7aa2', '#ff1453', '#d81b60', '#ff8da1']; 
 
-            class Particle {
+            class Heart {
                 constructor() {
                     this.x = Math.random() * canvas.width;
-                    this.y = canvas.height + Math.random() * 200;
+                    // Kalpler ekranın en altından, görünmez alandan başlasın
+                    this.y = canvas.height + (Math.random() * 500); 
                     
                     this.velocity = {
-                        x: Math.random() * 4 - 2, 
-                        y: -(Math.random() * 10 + 20) 
+                        y: -(Math.random() * 1.5 + 0.5) // Çok yavaş yukarı çıkış
                     };
                     
-                    this.gravity = 0.5; 
-                    this.friction = 0.99; 
-                    this.rotation = Math.random() * Math.PI * 2;
-                    this.rotationSpeed = Math.random() * 0.2 - 0.1;
                     this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.size = {
-                        width: Math.random() * 10 + 5,
-                        height: Math.random() * 10 + 5
-                    };
-                    this.life = Math.random() * 100 + 100;
-                    this.opacity = 1;
+                    this.size = Math.random() * 15 + 10; // Boyutlar (10px - 25px arası)
+                    this.opacity = Math.random() * 0.5 + 0.5; // Yarı saydamlık
+                    
+                    // Sağa sola rüzgar efekti için salınım değişkenleri
+                    this.sway = Math.random() * Math.PI * 2; 
+                    this.swaySpeed = Math.random() * 0.02 + 0.01; 
                 }
 
                 draw() {
                     ctx.save();
-                    ctx.translate(this.x + this.size.width / 2, this.y + this.size.height / 2);
-                    ctx.rotate(this.rotation);
-                    ctx.fillStyle = this.color;
                     ctx.globalAlpha = this.opacity;
-                    ctx.fillRect(-this.size.width / 2, -this.size.height / 2, this.size.width, this.size.height);
+                    ctx.fillStyle = this.color;
+                    ctx.font = this.size + "px Arial";
+                    ctx.textAlign = "center";
+                    
+                    // Hafif sağa sola sallanarak süzülme
+                    let currentX = this.x + Math.sin(this.sway) * 20; 
+                    
+                    ctx.fillText("❤", currentX, this.y);
                     ctx.restore();
                 }
 
                 update() {
-                    this.velocity.x *= this.friction;
-                    this.velocity.y += this.gravity; 
-                    this.x += this.velocity.x;
                     this.y += this.velocity.y;
-                    this.rotation += this.rotationSpeed;
+                    this.sway += this.swaySpeed;
                     
-                    if (this.y > canvas.height + 50 && this.velocity.y > 0) {
-                        this.y = canvas.height + Math.random() * 100;
-                        this.velocity.y = -(Math.random() * 10 + 20); 
+                    // Kalp ekranın üstünden çıkarsa, onu tekrar en alta gönder (Sürekli döngü)
+                    if (this.y < -50) {
+                        this.y = canvas.height + 50;
+                        this.x = Math.random() * canvas.width;
                     }
                 }
             }
 
-            for (let i = 0; i < 200; i++) {
-                particles.push(new Particle());
+            // Ekranda aynı anda bulunacak kalp sayısı (sade olması için 60 adet ideal)
+            for (let i = 0; i < 60; i++) {
+                particles.push(new Heart());
             }
 
             function animate() {
@@ -220,28 +238,31 @@
             window.addEventListener('resize', () => {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.length = 0; 
-                for (let i = 0; i < 200; i++) {
-                    particles.push(new Particle());
-                }
             });
         }
 
-        // --- Zarfın Açılma Mantığı ---
+        // --- Adım Adım Zarf Açılma Mantığı ---
         const btn = document.getElementById('clickMe');
         const envContainer = document.getElementById('envelope-container');
 
         btn.addEventListener('click', () => {
-            // Butonu gizle, zarfı göster
+            // Butonu gizle, kapalı zarfı göster
             btn.style.display = 'none';
             envContainer.style.display = 'block';
             
-            // CSS transition çalışsın ve eş zamanlı olarak KONFETİ PATLASIN!
+            // Arka planda kalpler süzülmeye başlasın
+            startHearts(); 
+            
+            // 1. ADIM: Yarım saniye bekle ve zarfın kapağını aç
             setTimeout(() => {
-                envContainer.classList.add('open-envelope');
-                startConfetti(); // Sürpriz anı!
-            }, 100);
+                envContainer.classList.add('open-flap');
+                
+                // 2. ADIM: Kapak tamamen açıldıktan sonra (0.6sn) mektubu yukarı çıkar
+                setTimeout(() => {
+                    envContainer.classList.add('pull-paper');
+                }, 600);
+
+            }, 500); // Tıkladıktan sonra kapağın açılması için ufak bir bekleme süresi
         });
     </script>
 
