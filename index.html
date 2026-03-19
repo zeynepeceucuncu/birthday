@@ -9,7 +9,7 @@
         body {
             background-color: #ffb6c1; /* Tatlı pembe arka plan */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Sayfanın kaymasını engeller */
+            overflow: hidden; 
             margin: 0;
             padding: 0;
             display: flex;
@@ -27,8 +27,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1; /* Diğer elementlerin arkasında dursun */
-            pointer-events: none; /* Tıklamaları engellememesi için */
+            z-index: 1; 
+            pointer-events: none; 
         }
 
         /* Başlık Texti */
@@ -45,7 +45,7 @@
         #clickMe {
             padding: 15px 30px;
             font-size: 1.2rem;
-            background-color: #ff69b4;
+            background-color: #ff69b4; /* Butonu sıcak pembe yaptık */
             color: white;
             border: none;
             border-radius: 25px;
@@ -65,7 +65,7 @@
             width: 380px; 
             height: 240px; 
             z-index: 10; 
-            perspective: 1000px; /* 3 Boyutlu açılma efekti için */
+            perspective: 1000px; 
         }
 
         /* Katman 1: Zarfın Arka Paneli */
@@ -73,21 +73,21 @@
             position: absolute;
             bottom: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: #e69138; /* Koyu taba */
+            background-color: #b30000; /* KIRMIZI TON 1 (Koyu) */
             border-radius: 0 0 10px 10px;
-            z-index: 1; /* Envelope back */
+            z-index: 1; 
         }
 
         /* Katman 2: Mektup Kâğıdı (Ortada) */
         .paper {
             position: absolute;
-            bottom: 10px; /* Zarfın içinde başla */
+            bottom: 10px; 
             left: 2.5%;
             width: 95%;
-            height: 300px; /* METNİN SIĞMASI İÇİN KAĞIT UZATILDI */
+            height: 300px; 
             background-color: #fffaf0;
-            z-index: 2; /* Between back and front */
-            padding: 25px; /* Daha fazla iç boşluk */
+            z-index: 2; 
+            padding: 25px; 
             box-sizing: border-box;
             font-size: 1.05rem;
             line-height: 1.4;
@@ -95,7 +95,7 @@
             text-align: center;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 1.2s ease-in-out; /* Yavaşça süzülerek çıkma */
+            transition: transform 1.2s ease-in-out; 
         }
 
         /* Katman 3: Zarfın Ön Paneli (Alt Cep) */
@@ -104,8 +104,8 @@
             bottom: 0; left: 0;
             width: 100%;
             height: 150px; 
-            z-index: 3; /* Top layer of the ceb */
-            background-color: #f4a460; /* Açık taba */
+            z-index: 3; 
+            background-color: #ff3333; /* KIRMIZI TON 2 (Açık - Ön yüz) */
             border-radius: 0 0 10px 10px;
         }
         .envelope-front::before {
@@ -113,9 +113,9 @@
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 190px solid transparent; /* Half of 380px */
+            border-left: 190px solid transparent; 
             border-right: 190px solid transparent;
-            border-top: 90px solid #e69138;
+            border-top: 90px solid #cc0000; /* KIRMIZI TON 3 (Kat izi gölgesi) */
             z-index: 3;
         }
 
@@ -126,16 +126,16 @@
             width: 0; height: 0;
             border-left: 190px solid transparent;
             border-right: 190px solid transparent;
-            border-top: 135px solid #d38332; /* Arkadan biraz daha koyu, kat yeri belli olsun */
-            z-index: 4; /* Kapalıyken en üstte */
-            transform-origin: top; /* Üst kısımdan katlanacak */
+            border-top: 135px solid #990000; /* KIRMIZI TON 4 (En koyu - Kapak gölgesi) */
+            z-index: 4; 
+            transform-origin: top; 
             transition: transform 0.6s ease-in-out, z-index 0s 0.3s;
         }
 
         /* Animasyon 1: Kapağın Açılması */
         .open-flap .envelope-flap {
-            transform: rotateX(180deg); /* Kapağı yukarı doğru çevirir */
-            z-index: 1; /* Açıldığında mektubun arkasında kalması için z-index düşer */
+            transform: rotateX(180deg); 
+            z-index: 1; 
         }
 
         /* Animasyon 2: Mektubun Çıkması */
@@ -148,12 +148,13 @@
 
     <canvas id="heartCanvas"></canvas>
 
-    <h1>İyi ki Doğdun Rukoooo! 🎉</h1>
+    <h1>  Rukoooo! 🎉</h1>
     <button id="clickMe">There is a message for you </button>
 
     <div id="envelope-container">
         <div class="envelope-back"></div>
-        <div class="envelope-flap"></div> <div class="paper" id="message-paper">
+        <div class="envelope-flap"></div>
+        <div class="paper" id="message-paper">
             <b>Anneciiiiiiim,</b><br><br>
             Bilgisayar Mühendisi kızın olduğu belli olsun dedim:) Doğum günün kutlu olsunnn 💛 bize hep bayramdı bu sene tüm islam alemininkiyle çakıştı 😂<br><br>
             Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu anne hayat kaliten artardı 🤭 İyi ki Doğdun 🎂
@@ -238,21 +239,17 @@
         const envContainer = document.getElementById('envelope-container');
 
         btn.addEventListener('click', () => {
-            // Butonu gizle, kapalı zarfı göster
             btn.style.display = 'none';
             envContainer.style.display = 'block';
             
-            // Arka planda kalpler süzülmeye başlasın
             startHearts(); 
             
-            // 1. ADIM: Yarım saniye bekle ve zarfın kapağını aç
             setTimeout(() => {
                 envContainer.classList.add('open-flap');
                 
-                // 2. ADIM: Kapak tamamen açıldıktan sonra mektubu yukarı çıkar
                 setTimeout(() => {
                     envContainer.classList.add('pull-paper');
-                }, 600); // Kapak animasyon süresi kadar bekle
+                }, 600); 
 
             }, 500); 
         });
