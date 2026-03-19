@@ -7,9 +7,9 @@
     <style>
         /* Genel Sayfa Ayarları */
         body {
-            background-color: #ffb6c1; /* Tatlı bir pembe */
+            background-color: #ffb6c1; /* Tatlı pembe arka plan */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Dışarı taşan kokinaları gizler */
+            overflow: hidden; /* Sayfanın kaymasını engeller, konfetileri gizler */
             margin: 0;
             padding: 0;
             display: flex;
@@ -20,31 +20,21 @@
             position: relative;
         }
 
-        /* --- Hareketli Arka Plan Efekti (Bokeh/Işıltı) --- */
-        .bg-animation {
+        /* --- Konfeti Canvas (Animasyon) --- */
+        #confettiCanvas {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1; /* En arkada */
-        }
-        .bg-dot {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5); /* Şeffaf beyaz */
-            border-radius: 50%;
-            animation: drift infinite linear;
-        }
-        @keyframes drift {
-            0% { transform: translateY(0); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(-110vh); opacity: 0; }
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Diğer elementlerin arkasında dursun */
         }
 
         /* Başlık Texti */
         h1 {
             color: #d81b60;
             font-size: 3rem;
-            z-index: 10;
+            z-index: 10; /* En üstte */
             margin-bottom: 20px;
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
@@ -59,21 +49,21 @@
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            z-index: 10;
+            z-index: 10; /* En üstte */
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: transform 0.2s, background-color 0.2s;
         }
         #clickMe:hover { background-color: #ff1493; }
         #clickMe:active { transform: scale(0.95); }
 
-        /* --- Katmanlı Zarf ve Kâğıt Tasarımı (Düzeltildi) --- */
+        /* --- Zarf ve Büyütülmüş Kağıt Tasarımı (Corrected Layers) --- */
         #envelope-container {
-            display: none; /* Başlangıçta gizli */
+            display: none; 
             position: relative;
-            margin-top: 60px;
-            width: 320px;
-            height: 200px;
-            z-index: 10;
+            margin-top: 40px;
+            width: 380px; /* Zarfı metne sığması için daha da genişlettik */
+            height: 240px; /* Zarfın boyunu biraz uzattık */
+            z-index: 10; /* Main content level */
         }
 
         /* Katman 1: Zarfın Arka Paneli */
@@ -83,21 +73,22 @@
             width: 100%; height: 100%;
             background-color: #e69138; /* Koyu taba */
             border-radius: 0 0 10px 10px;
-            z-index: 1; /* En alt katman */
+            z-index: 1; /* Envelope back */
         }
 
         /* Katman 2: Mektup Kâğıdı (Ortada) */
         .paper {
             position: absolute;
             bottom: 10px; /* Zarfın içinde başla */
-            left: 5%;
-            width: 90%;
-            height: 180px;
+            left: 2.5%;
+            width: 95%;
+            height: 300px; /* METNİN SIĞMASI İÇİN KAĞIT UZATILDI */
             background-color: #fffaf0;
-            z-index: 2; /* Arka ve ön katman arasında */
-            padding: 20px;
+            z-index: 2; /* Between back and front */
+            padding: 25px; /* Daha fazla iç boşluk */
             box-sizing: border-box;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
+            line-height: 1.4;
             color: #333;
             text-align: center;
             border-radius: 5px;
@@ -110,114 +101,169 @@
             position: absolute;
             bottom: 0; left: 0;
             width: 100%;
-            height: 130px; /* Yüksekliği biraz azalttık ki kâğıt çıksın */
-            z-index: 3; /* En üst katman */
+            height: 150px; 
+            z-index: 3; /* Top layer */
             background-color: #f4a460; /* Açık taba */
             border-radius: 0 0 10px 10px;
         }
-        /* Zarfın ön kapağındaki katlama efekti (V şekli) */
+        
+        /* Zarfın ön kapağındaki katlama efekti (Düzeltildi) */
         .envelope-front::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 160px solid transparent;
-            border-right: 160px solid transparent;
-            border-top: 80px solid #e69138;
+            border-left: 190px solid transparent; /* Half of 380px */
+            border-right: 190px solid transparent;
+            border-top: 90px solid #e69138;
             z-index: 3;
         }
 
-        /* Zarf açılma animasyonu tetikleyicisi */
+        /* Zarf açılma animasyonu - Kağıt tam dışarı süzülsün */
         .open-envelope .paper {
-            transform: translateY(-160px); /* Kâğıt dışarı çıksın */
+            transform: translateY(-260px); 
         }
 
-        /* Kokina Animasyonu (Fırlayıp düşme) */
-        .kokina {
+        /* --- Sabit Kirazlar/Kokinalar (Static Background) --- */
+        .static-cherry {
             position: absolute;
-            bottom: -50px;
-            font-size: 30px;
-            z-index: 1;
-            animation: popAndFall 4s ease-in-out forwards;
-        }
-
-        @keyframes popAndFall {
-            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
-            40% { transform: translateY(-85vh) scale(1.2) rotate(180deg); opacity: 1; }
-            100% { transform: translateY(10vh) scale(1) rotate(360deg); opacity: 0; }
+            font-size: 35px;
+            z-index: 0; /* En arkada dursun */
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-animation" id="bgAnimation"></div>
+    <canvas id="confettiCanvas"></canvas>
 
     <h1>İyi ki Doğdun Rukoooo! 🎉</h1>
-    <button id="clickMe">There is a message for you</button>
+    <button id="clickMe">Bana Tıkla</button>
 
     <div id="envelope-container">
         <div class="envelope-back"></div>
         <div class="paper" id="message-paper">
-            Anneciiiiiim, <br><br> Bilgisayar Mühendisi kızın var belli olsun dedim:) Doğum günün kutlu olsunnn 💛 bize hep bayramdı bu sene tüm islam alemininkiyle çakıştı 😂 Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu hayat kaliten artardı 🤭 
+            <b>Anneciiiiiiim,</b><br><br>
+            Bilgisayar Mühendisi kızın olduğu belli olsun dedim:) Doğum günün kutlu olsunnn 💛 bize hep bayramdı bu sene tüm islam alemininkiyle çakıştı 😂<br><br>
+            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu 🤭
         </div>
         <div class="envelope-front"></div>
     </div>
 
     <script>
-        // --- Sayfa Yüklenince Yapılacaklar ---
         window.onload = () => {
-            // 1. Arka plan hareket efektini oluştur
-            createBackgroundAnimation();
-            
-            // 2. Kokinaları fırlat
-            startKokinaBurst();
+            createStaticCherries();
+            startConfetti(); // Aşağıdan yukarı fırlayan konfeti
         }
 
-        // --- Arka Plan Bokeh Efekti ---
-        function createBackgroundAnimation() {
-            const bgContainer = document.getElementById('bgAnimation');
-            for (let i = 0; i < 50; i++) {
-                const dot = document.createElement('div');
-                dot.classList.add('bg-dot');
+        // 1. Arka Plana Sabit Kirazları Ekle (🍒)
+        function createStaticCherries() {
+            const count = 40; // Ekranda duracak kiraz sayısı
+            for (let i = 0; i < count; i++) {
+                const cherry = document.createElement('div');
+                cherry.classList.add('static-cherry');
+                cherry.innerHTML = '🍒';
                 
-                // Rastgele boyut (4px - 12px)
-                const size = (Math.random() * 8 + 4) + 'px';
-                dot.style.width = size;
-                dot.style.height = size;
+                // Ekranın rastgele yerlerine dağıt
+                cherry.style.left = Math.random() * 95 + 'vw';
+                cherry.style.top = Math.random() * 95 + 'vh';
+                cherry.style.transform = `rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.3 + 0.8})`; // Rastgele çevir ve hafif boyutlandır
                 
-                // Rastgele yatay pozisyon
-                dot.style.left = Math.random() * 100 + 'vw';
-                dot.style.top = Math.random() * 100 + 'vh'; // Ekrana yayılması için top değeri
-                
-                // Rastgele animasyon süreleri ve gecikmeleri (scatter etkisi)
-                dot.style.animationDuration = (Math.random() * 10 + 10) + 's'; 
-                dot.style.animationDelay = (Math.random() * -20) + 's'; // Önceden başlamış gibi
-                
-                bgContainer.appendChild(dot);
+                document.body.appendChild(cherry);
             }
         }
 
-        // --- Kokina Efekti ---
-        function startKokinaBurst() {
-            function createKokina() {
-                const kokina = document.createElement('div');
-                kokina.classList.add('kokina');
-                kokina.innerHTML = '🍒'; // Kokina kirazı
-                kokina.style.left = Math.random() * 100 + 'vw';
-                kokina.style.animationDuration = (Math.random() * 2 + 3) + 's'; 
-                document.body.appendChild(kokina);
-                setTimeout(() => kokina.remove(), 5000); // Temizle
+        // 2. JavaScript Canvas Konfeti Animasyonu (Aşağıdan Yukarı)
+        function startConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+
+            class Particle {
+                constructor() {
+                    // Konfetiler aşağıdan başlasın
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height + Math.random() * 200;
+                    
+                    // Fizik özellikleri (Aşağıdan YUKARI fırlama)
+                    this.velocity = {
+                        x: Math.random() * 4 - 2, // Hafif yatay hareket
+                        y: -(Math.random() * 10 + 20) // Büyük negatif Y hızı (yukarı doğru)
+                    };
+                    
+                    this.gravity = 0.5; // Yavaşça aşağı düşme yerçekimi
+                    this.friction = 0.99; // Sürtünme
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = Math.random() * 0.2 - 0.1;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.size = {
+                        width: Math.random() * 10 + 5,
+                        height: Math.random() * 10 + 5
+                    };
+                    this.life = Math.random() * 100 + 100;
+                    this.opacity = 1;
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x + this.size.width / 2, this.y + this.size.height / 2);
+                    ctx.rotate(this.rotation);
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillRect(-this.size.width / 2, -this.size.height / 2, this.size.width, this.size.height);
+                    ctx.restore();
+                }
+
+                update() {
+                    this.velocity.x *= this.friction;
+                    this.velocity.y += this.gravity; // Yerçekimini ekle (önce yukarı fırlar, sonra aşağı düşer)
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    this.rotation += this.rotationSpeed;
+                    
+                    // Ekrandan çıkınca temizle
+                    if (this.y > canvas.height + 50 && this.velocity.y > 0) {
+                        this.y = canvas.height + Math.random() * 100;
+                        this.velocity.y = -(Math.random() * 10 + 20); // Tekrar fırlat
+                    }
+                }
             }
 
-            // Sayfa açıldığında kokinaları belli aralıklarla fırlat (ilk 3 saniye boyunca)
-            const burst = setInterval(() => {
-                createKokina();
-                createKokina();
-            }, 200);
-            setTimeout(() => clearInterval(burst), 3000);
+            // İlk partikülleri oluştur
+            for (let i = 0; i < 200; i++) {
+                particles.push(new Particle());
+            }
+
+            // Animasyon Döngüsü
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+            }
+
+            animate();
+
+            // Ekran boyutu değişirse canvas'ı güncelle
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.length = 0; // Sıfırla
+                for (let i = 0; i < 200; i++) {
+                    particles.push(new Particle());
+                }
+            });
         }
 
-        // --- Zarf Mantığı ---
+        // --- Zarfın Açılma Mantığı ---
         const btn = document.getElementById('clickMe');
         const envContainer = document.getElementById('envelope-container');
 
@@ -226,7 +272,7 @@
             btn.style.display = 'none';
             envContainer.style.display = 'block';
             
-            // CSS transition'ın çalışması için minik bir gecikme ekliyoruz
+            // CSS transition'ın çalışması için minik bir gecikme
             setTimeout(() => {
                 envContainer.classList.add('open-envelope');
             }, 100);
