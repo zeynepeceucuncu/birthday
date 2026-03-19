@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İyi ki Doğdun!</title>
+    <style>
+        /* Genel Sayfa Ayarları */
+        body {
+            background-color: #ffb6c1; /* Tatlı bir pembe */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Dışarı taşan kokinaları gizler */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Başlık Texti */
+        h1 {
+            color: #d81b60;
+            font-size: 3rem;
+            z-index: 10;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Buton Tasarımı */
+        #clickMe {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        #clickMe:hover {
+            background-color: #ff1493;
+        }
+
+        #clickMe:active {
+            transform: scale(0.95);
+        }
+
+        /* Zarf ve Kağıt Tasarımı */
+        #envelope-container {
+            display: none; /* Başlangıçta gizli */
+            position: relative;
+            margin-top: 40px;
+            width: 320px;
+            height: 200px;
+            z-index: 10;
+        }
+
+        .envelope {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f4a460;
+            border-radius: 0 0 10px 10px;
+            z-index: 3;
+        }
+
+        /* Zarfın ön üçgen kısmı */
+        .envelope::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-bottom: 110px solid #e69138;
+            z-index: 3;
+        }
+
+        /* Mektup Kağıdı */
+        .paper {
+            position: absolute;
+            bottom: 10px;
+            left: 5%;
+            width: 90%;
+            height: 180px;
+            background-color: #fffaf0;
+            z-index: 2;
+            padding: 20px;
+            box-sizing: border-box;
+            font-size: 1.1rem;
+            color: #333;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 1.2s ease-in-out;
+        }
+
+        /* Zarf açılma animasyonu tetikleyicisi */
+        .open-envelope .paper {
+            transform: translateY(-130px);
+        }
+
+        /* Kokina Animasyonu (Fırlayıp düşme) */
+        .kokina {
+            position: absolute;
+            bottom: -50px;
+            font-size: 30px;
+            z-index: 1;
+            animation: popAndFall 4s ease-in-out forwards;
+        }
+
+        @keyframes popAndFall {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
+            40% { transform: translateY(-85vh) scale(1.2) rotate(180deg); opacity: 1; }
+            100% { transform: translateY(10vh) scale(1) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>İyi ki Doğdun Anneciğim! 🎉</h1>
+    <button id="clickMe">Bana Tıkla</button>
+
+    <div id="envelope-container">
+        <div class="paper" id="message-paper">
+            Canım annem, <br><br> Yeni yaşın sana sağlık, mutluluk ve bolca huzur getirsin. Seni çok seviyorum! ❤️
+        </div>
+        <div class="envelope"></div>
+    </div>
+
+    <script>
+        // --- Kokina Efekti ---
+        function createKokina() {
+            const kokina = document.createElement('div');
+            kokina.classList.add('kokina');
+            
+            // Gerçek bir resim kullanmak istersen burayı '<img src="resim_linki.png" width="40">' yapabilirsin.
+            kokina.innerHTML = '🍒🌿'; 
+            
+            // Rastgele yatay pozisyon ve hafif farklı animasyon süreleri
+            kokina.style.left = Math.random() * 100 + 'vw';
+            kokina.style.animationDuration = (Math.random() * 2 + 3) + 's'; 
+            
+            document.body.appendChild(kokina);
+
+            // İşlevi biten elementi DOM'dan temizle
+            setTimeout(() => {
+                kokina.remove();
+            }, 5000);
+        }
+
+        // Sayfa açıldığında kokinaları belli aralıklarla fırlat (ilk 3 saniye boyunca)
+        const burst = setInterval(() => {
+            createKokina();
+            createKokina();
+        }, 200);
+
+        setTimeout(() => clearInterval(burst), 3000);
+
+
+        // --- Zarf Mantığı ---
+        const btn = document.getElementById('clickMe');
+        const envContainer = document.getElementById('envelope-container');
+
+        btn.addEventListener('click', () => {
+            // Butonu gizle, zarfı göster
+            btn.style.display = 'none';
+            envContainer.style.display = 'block';
+            
+            // CSS transition'ın çalışması için minik bir gecikme ekliyoruz
+            setTimeout(() => {
+                envContainer.classList.add('open-envelope');
+            }, 100);
+        });
+    </script>
+
+</body>
+</html>
