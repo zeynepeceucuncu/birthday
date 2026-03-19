@@ -62,8 +62,8 @@
             display: none; 
             position: relative;
             margin-top: 40px;
-            width: 380px; 
-            height: 240px; 
+            width: 300px; /* DARALTILDI: 380px -> 300px */
+            height: 190px; /* DARALTILDI (oranı korumak için): 240px -> 190px */
             z-index: 10; 
             perspective: 1000px; 
         }
@@ -84,22 +84,22 @@
             bottom: 10px; 
             left: 2.5%;
             width: 95%;
-            height: 300px; 
+            height: 240px; /* DARALTILDI (oranı korumak için): 300px -> 240px */
             background-color: #fffaf0;
             z-index: 2; 
-            padding: 25px; 
+            padding: 20px; /* DARALTILDI: 25px -> 20px */
             box-sizing: border-box;
-            font-size: 1.05rem;
+            font-size: 1rem; /* DARALTILDI: 1.05rem -> 1rem */
             line-height: 1.4;
             color: #333;
             text-align: center;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             
-            /* --- SİHİR BURADA: Kâğıdı başta tamamen yok ediyoruz --- */
+            /* Kâğıt başta tamamen gizli */
             opacity: 0; 
             visibility: hidden;
-            transform: translateY(50px); /* Zarfın taa dibinde başlasın */
+            transform: translateY(40px); /* DARALTILDI: 50px -> 40px */
             transition: transform 1.2s ease-in-out, opacity 0.5s ease-in; 
         }
 
@@ -108,7 +108,7 @@
             position: absolute;
             bottom: 0; left: 0;
             width: 100%;
-            height: 150px; 
+            height: 120px; /* DARALTILDI: 150px -> 120px */
             z-index: 3; 
             background-color: #ff3333; 
             border-radius: 0 0 10px 10px;
@@ -118,9 +118,9 @@
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 190px solid transparent; 
-            border-right: 190px solid transparent;
-            border-top: 90px solid #cc0000; 
+            border-left: 150px solid transparent; /* DARALTILDI (Half of 300px): 190px -> 150px */
+            border-right: 150px solid transparent; /* DARALTILDI: 190px -> 150px */
+            border-top: 70px solid #cc0000; /* DARALTILDI: 90px -> 70px */
             z-index: 3;
         }
 
@@ -129,9 +129,9 @@
             position: absolute;
             top: 0; left: 0;
             width: 0; height: 0;
-            border-left: 190px solid transparent;
-            border-right: 190px solid transparent;
-            border-top: 135px solid #990000; 
+            border-left: 150px solid transparent; /* DARALTILDI: 190px -> 150px */
+            border-right: 150px solid transparent; /* DARALTILDI: 190px -> 150px */
+            border-top: 105px solid #990000; /* DARALTILDI: 135px -> 105px */
             z-index: 4; 
             transform-origin: top; 
             transition: transform 0.6s ease-in-out, z-index 0s 0.3s;
@@ -145,9 +145,9 @@
 
         /* Animasyon 2: Mektubun Çıkması (Görünür olup yukarı kayar) */
         .pull-paper .paper {
-            opacity: 1; /* Animasyon başladığında görünür olur */
+            opacity: 1; 
             visibility: visible;
-            transform: translateY(-260px); 
+            transform: translateY(-205px); /* DARALTILDI: -260px -> -205px */
         }
     </style>
 </head>
@@ -164,7 +164,7 @@
         <div class="paper" id="message-paper">
             <b>Anneciiiiiiim,</b><br><br>
             Bilgisayar Mühendisi kızın olduğu belli olsun dedim:) Doğum günün kutlu olsunnn 💛 bize hep bayramdı bu sene tüm islam alemininkiyle çakıştı 😂<br><br>
-            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu 🤭 İyi ki Doğdun 🎂
+            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu anne 🤭 İyi ki Doğdun 🎂
         </div>
         <div class="envelope-front"></div>
     </div>
@@ -178,7 +178,7 @@
             canvas.height = window.innerHeight;
 
             const particles = [];
-            const colors = ['#ff4b72', '#ff7aa2', '#ff1453', '#d81b60', '#ff8da1']; 
+            const colors = ['#ff4b72', '#ff7aa2', '#ff1453', '#d81b60', '#ff8da1']; // Tatlı pembe ve kırmızı tonları
 
             class Heart {
                 constructor() {
@@ -186,14 +186,14 @@
                     this.y = canvas.height + Math.random() * 500;
                     
                     this.velocity = {
-                        y: -(Math.random() * 1.5 + 0.5) 
+                        y: -(Math.random() * 1.5 + 0.5) // Çok yavaş yukarı çıkış
                     };
                     
                     this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.size = Math.random() * 15 + 10; 
-                    this.opacity = Math.random() * 0.5 + 0.5; 
+                    this.size = Math.random() * 15 + 10; // Boyutlar
+                    this.opacity = Math.random() * 0.5 + 0.5; // Yarı saydamlık
                     
-                    this.sway = Math.random() * Math.PI * 2; 
+                    this.sway = Math.random() * Math.PI * 2; // Rüzgar efekti için salınım
                     this.swaySpeed = Math.random() * 0.02 + 0.01; 
                 }
 
@@ -203,7 +203,7 @@
                     ctx.fillStyle = this.color;
                     ctx.font = this.size + "px Arial";
                     ctx.textAlign = "center";
-                    let currentX = this.x + Math.sin(this.sway) * 20; 
+                    let currentX = this.x + Math.sin(this.sway) * 20; // Hafif sağa sola sallanarak süzülme
                     ctx.fillText("❤", currentX, this.y);
                     ctx.restore();
                 }
