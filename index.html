@@ -73,21 +73,21 @@
             position: absolute;
             bottom: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: #e69138; 
+            background-color: #e69138; /* Koyu taba */
             border-radius: 0 0 10px 10px;
-            z-index: 1; 
+            z-index: 1; /* Envelope back */
         }
 
         /* Katman 2: Mektup Kâğıdı (Ortada) */
         .paper {
             position: absolute;
-            bottom: 10px; 
+            bottom: 10px; /* Zarfın içinde başla */
             left: 2.5%;
             width: 95%;
-            height: 300px; 
+            height: 300px; /* METNİN SIĞMASI İÇİN KAĞIT UZATILDI */
             background-color: #fffaf0;
-            z-index: 2; 
-            padding: 25px; 
+            z-index: 2; /* Between back and front */
+            padding: 25px; /* Daha fazla iç boşluk */
             box-sizing: border-box;
             font-size: 1.05rem;
             line-height: 1.4;
@@ -104,8 +104,8 @@
             bottom: 0; left: 0;
             width: 100%;
             height: 150px; 
-            z-index: 3; 
-            background-color: #f4a460; 
+            z-index: 3; /* Top layer of the ceb */
+            background-color: #f4a460; /* Açık taba */
             border-radius: 0 0 10px 10px;
         }
         .envelope-front::before {
@@ -113,7 +113,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 190px solid transparent; 
+            border-left: 190px solid transparent; /* Half of 380px */
             border-right: 190px solid transparent;
             border-top: 90px solid #e69138;
             z-index: 3;
@@ -148,7 +148,7 @@
 
     <canvas id="heartCanvas"></canvas>
 
-    <h1> İyi ki Doğdun Rukoooo! 🎉</h1>
+    <h1>İyi ki Doğdun Rukoooo! 🎉</h1>
     <button id="clickMe">There is a message for you </button>
 
     <div id="envelope-container">
@@ -156,7 +156,7 @@
         <div class="envelope-flap"></div> <div class="paper" id="message-paper">
             <b>Anneciiiiiiim,</b><br><br>
             Bilgisayar Mühendisi kızın olduğu belli olsun dedim:) Doğum günün kutlu olsunnn 💛 bize hep bayramdı bu sene tüm islam alemininkiyle çakıştı 😂<br><br>
-            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu anne , hayat kaliten artardı 🤭 İyi ki Doğdun 🎂
+            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu anne hayat kaliten artardı 🤭 İyi ki Doğdun 🎂
         </div>
         <div class="envelope-front"></div>
     </div>
@@ -170,25 +170,22 @@
             canvas.height = window.innerHeight;
 
             const particles = [];
-            // Tatlı pembe ve kırmızı tonları
-            const colors = ['#ff4b72', '#ff7aa2', '#ff1453', '#d81b60', '#ff8da1']; 
+            const colors = ['#ff4b72', '#ff7aa2', '#ff1453', '#d81b60', '#ff8da1']; // Tatlı pembe ve kırmızı tonları
 
             class Heart {
                 constructor() {
                     this.x = Math.random() * canvas.width;
-                    // Kalpler ekranın en altından, görünmez alandan başlasın
-                    this.y = canvas.height + (Math.random() * 500); 
+                    this.y = canvas.height + Math.random() * 500;
                     
                     this.velocity = {
                         y: -(Math.random() * 1.5 + 0.5) // Çok yavaş yukarı çıkış
                     };
                     
                     this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.size = Math.random() * 15 + 10; // Boyutlar (10px - 25px arası)
+                    this.size = Math.random() * 15 + 10; // Boyutlar
                     this.opacity = Math.random() * 0.5 + 0.5; // Yarı saydamlık
                     
-                    // Sağa sola rüzgar efekti için salınım değişkenleri
-                    this.sway = Math.random() * Math.PI * 2; 
+                    this.sway = Math.random() * Math.PI * 2; // Rüzgar efekti için salınım
                     this.swaySpeed = Math.random() * 0.02 + 0.01; 
                 }
 
@@ -198,10 +195,7 @@
                     ctx.fillStyle = this.color;
                     ctx.font = this.size + "px Arial";
                     ctx.textAlign = "center";
-                    
-                    // Hafif sağa sola sallanarak süzülme
-                    let currentX = this.x + Math.sin(this.sway) * 20; 
-                    
+                    let currentX = this.x + Math.sin(this.sway) * 20; // Hafif sağa sola sallanarak süzülme
                     ctx.fillText("❤", currentX, this.y);
                     ctx.restore();
                 }
@@ -210,7 +204,6 @@
                     this.y += this.velocity.y;
                     this.sway += this.swaySpeed;
                     
-                    // Kalp ekranın üstünden çıkarsa, onu tekrar en alta gönder (Sürekli döngü)
                     if (this.y < -50) {
                         this.y = canvas.height + 50;
                         this.x = Math.random() * canvas.width;
@@ -218,7 +211,6 @@
                 }
             }
 
-            // Ekranda aynı anda bulunacak kalp sayısı (sade olması için 60 adet ideal)
             for (let i = 0; i < 60; i++) {
                 particles.push(new Heart());
             }
@@ -257,12 +249,12 @@
             setTimeout(() => {
                 envContainer.classList.add('open-flap');
                 
-                // 2. ADIM: Kapak tamamen açıldıktan sonra (0.6sn) mektubu yukarı çıkar
+                // 2. ADIM: Kapak tamamen açıldıktan sonra mektubu yukarı çıkar
                 setTimeout(() => {
                     envContainer.classList.add('pull-paper');
-                }, 600);
+                }, 600); // Kapak animasyon süresi kadar bekle
 
-            }, 500); // Tıkladıktan sonra kapağın açılması için ufak bir bekleme süresi
+            }, 500); 
         });
     </script>
 
