@@ -28,6 +28,7 @@
             width: 100%;
             height: 100%;
             z-index: 1; /* Diğer elementlerin arkasında dursun */
+            pointer-events: none; /* Tıklamaları engellememesi için */
         }
 
         /* Başlık Texti */
@@ -123,21 +124,13 @@
         .open-envelope .paper {
             transform: translateY(-260px); 
         }
-
-        /* --- Sabit Kirazlar/Kokinalar (Static Background) --- */
-        .static-cherry {
-            position: absolute;
-            font-size: 35px;
-            z-index: 0; /* En arkada dursun */
-            opacity: 0.9;
-        }
     </style>
 </head>
 <body>
 
     <canvas id="confettiCanvas"></canvas>
 
-    <h1>İyi ki Doğdun Rukoooo! 🎉</h1>
+    <h1> Rukoooo! 🎉</h1>
     <button id="clickMe">There is a message for you </button>
 
     <div id="envelope-container">
@@ -145,19 +138,13 @@
         <div class="paper" id="message-paper">
             <b>Anneciiiiiiim,</b><br><br>
             Bilgisayar Mühendisi kızın olduğu belli olsun dedim:) Doğum günün kutlu olsunnn 💛 bize hep bayramdı bu sene tüm islam alemininkiyle çakıştı 😂<br><br>
-            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu 🤭
+            Sana hediye olarak senden bir tane verebilseydik çok iyi olurdu anne hayat kaliten artardı 🤭 İyi ki Doğdun 🎂
         </div>
         <div class="envelope-front"></div>
     </div>
 
     <script>
-        window.onload = () => {
-            createStaticCherries();
-            startConfetti(); // Aşağıdan yukarı fırlayan konfeti
-        }
-
-
-        // 2. JavaScript Canvas Konfeti Animasyonu (Aşağıdan Yukarı)
+        // JavaScript Canvas Konfeti Animasyonu (Aşağıdan Yukarı)
         function startConfetti() {
             const canvas = document.getElementById('confettiCanvas');
             const ctx = canvas.getContext('2d');
@@ -169,18 +156,16 @@
 
             class Particle {
                 constructor() {
-                    // Konfetiler aşağıdan başlasın
                     this.x = Math.random() * canvas.width;
                     this.y = canvas.height + Math.random() * 200;
                     
-                    // Fizik özellikleri (Aşağıdan YUKARI fırlama)
                     this.velocity = {
-                        x: Math.random() * 4 - 2, // Hafif yatay hareket
-                        y: -(Math.random() * 10 + 20) // Büyük negatif Y hızı (yukarı doğru)
+                        x: Math.random() * 4 - 2, 
+                        y: -(Math.random() * 10 + 20) 
                     };
                     
-                    this.gravity = 0.5; // Yavaşça aşağı düşme yerçekimi
-                    this.friction = 0.99; // Sürtünme
+                    this.gravity = 0.5; 
+                    this.friction = 0.99; 
                     this.rotation = Math.random() * Math.PI * 2;
                     this.rotationSpeed = Math.random() * 0.2 - 0.1;
                     this.color = colors[Math.floor(Math.random() * colors.length)];
@@ -204,25 +189,22 @@
 
                 update() {
                     this.velocity.x *= this.friction;
-                    this.velocity.y += this.gravity; // Yerçekimini ekle (önce yukarı fırlar, sonra aşağı düşer)
+                    this.velocity.y += this.gravity; 
                     this.x += this.velocity.x;
                     this.y += this.velocity.y;
                     this.rotation += this.rotationSpeed;
                     
-                    // Ekrandan çıkınca temizle
                     if (this.y > canvas.height + 50 && this.velocity.y > 0) {
                         this.y = canvas.height + Math.random() * 100;
-                        this.velocity.y = -(Math.random() * 10 + 20); // Tekrar fırlat
+                        this.velocity.y = -(Math.random() * 10 + 20); 
                     }
                 }
             }
 
-            // İlk partikülleri oluştur
             for (let i = 0; i < 200; i++) {
                 particles.push(new Particle());
             }
 
-            // Animasyon Döngüsü
             function animate() {
                 requestAnimationFrame(animate);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -235,12 +217,11 @@
 
             animate();
 
-            // Ekran boyutu değişirse canvas'ı güncelle
             window.addEventListener('resize', () => {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.length = 0; // Sıfırla
+                particles.length = 0; 
                 for (let i = 0; i < 200; i++) {
                     particles.push(new Particle());
                 }
@@ -256,9 +237,10 @@
             btn.style.display = 'none';
             envContainer.style.display = 'block';
             
-            // CSS transition'ın çalışması için minik bir gecikme
+            // CSS transition çalışsın ve eş zamanlı olarak KONFETİ PATLASIN!
             setTimeout(() => {
                 envContainer.classList.add('open-envelope');
+                startConfetti(); // Sürpriz anı!
             }, 100);
         });
     </script>
