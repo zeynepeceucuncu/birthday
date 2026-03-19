@@ -138,7 +138,7 @@
     <canvas id="confettiCanvas"></canvas>
 
     <h1>İyi ki Doğdun Rukoooo! 🎉</h1>
-    <button id="clickMe">Bana Tıkla</button>
+    <button id="clickMe">There is a message for you </button>
 
     <div id="envelope-container">
         <div class="envelope-back"></div>
@@ -156,22 +156,6 @@
             startConfetti(); // Aşağıdan yukarı fırlayan konfeti
         }
 
-        // 1. Arka Plana Sabit Kirazları Ekle (🍒)
-        function createStaticCherries() {
-            const count = 40; // Ekranda duracak kiraz sayısı
-            for (let i = 0; i < count; i++) {
-                const cherry = document.createElement('div');
-                cherry.classList.add('static-cherry');
-                cherry.innerHTML = '🍒';
-                
-                // Ekranın rastgele yerlerine dağıt
-                cherry.style.left = Math.random() * 95 + 'vw';
-                cherry.style.top = Math.random() * 95 + 'vh';
-                cherry.style.transform = `rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.3 + 0.8})`; // Rastgele çevir ve hafif boyutlandır
-                
-                document.body.appendChild(cherry);
-            }
-        }
 
         // 2. JavaScript Canvas Konfeti Animasyonu (Aşağıdan Yukarı)
         function startConfetti() {
