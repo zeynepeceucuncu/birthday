@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İyi ki Doğdun!</title>
+    <title>İyi ki Doğdun Rukoooo!</title>
     <style>
         /* Genel Sayfa Ayarları */
         body {
@@ -17,6 +17,27 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            position: relative;
+        }
+
+        /* --- Hareketli Arka Plan Efekti (Bokeh/Işıltı) --- */
+        .bg-animation {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1; /* En arkada */
+        }
+        .bg-dot {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5); /* Şeffaf beyaz */
+            border-radius: 50%;
+            animation: drift infinite linear;
+        }
+        @keyframes drift {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-110vh); opacity: 0; }
         }
 
         /* Başlık Texti */
@@ -42,55 +63,38 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: transform 0.2s, background-color 0.2s;
         }
+        #clickMe:hover { background-color: #ff1493; }
+        #clickMe:active { transform: scale(0.95); }
 
-        #clickMe:hover {
-            background-color: #ff1493;
-        }
-
-        #clickMe:active {
-            transform: scale(0.95);
-        }
-
-        /* Zarf ve Kağıt Tasarımı */
+        /* --- Katmanlı Zarf ve Kâğıt Tasarımı (Düzeltildi) --- */
         #envelope-container {
             display: none; /* Başlangıçta gizli */
             position: relative;
-            margin-top: 40px;
+            margin-top: 60px;
             width: 320px;
             height: 200px;
             z-index: 10;
         }
 
-        .envelope {
+        /* Katman 1: Zarfın Arka Paneli */
+        .envelope-back {
             position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f4a460;
+            bottom: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #e69138; /* Koyu taba */
             border-radius: 0 0 10px 10px;
-            z-index: 3;
+            z-index: 1; /* En alt katman */
         }
 
-        /* Zarfın ön üçgen kısmı */
-        .envelope::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            border-left: 160px solid transparent;
-            border-right: 160px solid transparent;
-            border-bottom: 110px solid #e69138;
-            z-index: 3;
-        }
-
-        /* Mektup Kağıdı */
+        /* Katman 2: Mektup Kâğıdı (Ortada) */
         .paper {
             position: absolute;
-            bottom: 10px;
+            bottom: 10px; /* Zarfın içinde başla */
             left: 5%;
             width: 90%;
             height: 180px;
             background-color: #fffaf0;
-            z-index: 2;
+            z-index: 2; /* Arka ve ön katman arasında */
             padding: 20px;
             box-sizing: border-box;
             font-size: 1.1rem;
@@ -101,9 +105,31 @@
             transition: transform 1.2s ease-in-out;
         }
 
+        /* Katman 3: Zarfın Ön Paneli (Üstte) */
+        .envelope-front {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            height: 130px; /* Yüksekliği biraz azalttık ki kâğıt çıksın */
+            z-index: 3; /* En üst katman */
+            background-color: #f4a460; /* Açık taba */
+            border-radius: 0 0 10px 10px;
+        }
+        /* Zarfın ön kapağındaki katlama efekti (V şekli) */
+        .envelope-front::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 80px solid #e69138;
+            z-index: 3;
+        }
+
         /* Zarf açılma animasyonu tetikleyicisi */
         .open-envelope .paper {
-            transform: translateY(-130px);
+            transform: translateY(-160px); /* Kâğıt dışarı çıksın */
         }
 
         /* Kokina Animasyonu (Fırlayıp düşme) */
@@ -124,45 +150,72 @@
 </head>
 <body>
 
-    <h1>İyi ki Doğdun Anneciğim! 🎉</h1>
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <h1>İyi ki Doğdun Rukoooo! 🎉</h1>
     <button id="clickMe">Bana Tıkla</button>
 
     <div id="envelope-container">
+        <div class="envelope-back"></div>
         <div class="paper" id="message-paper">
-            Canım annem, <br><br> Yeni yaşın sana sağlık, mutluluk ve bolca huzur getirsin. Seni çok seviyorum! ❤️
+            Canım Rukooo, <br><br> Yeni yaşın sana sağlık, mutluluk ve bolca huzur getirsin. Seni çok seviyorum! ❤️
         </div>
-        <div class="envelope"></div>
+        <div class="envelope-front"></div>
     </div>
 
     <script>
-        // --- Kokina Efekti ---
-        function createKokina() {
-            const kokina = document.createElement('div');
-            kokina.classList.add('kokina');
+        // --- Sayfa Yüklenince Yapılacaklar ---
+        window.onload = () => {
+            // 1. Arka plan hareket efektini oluştur
+            createBackgroundAnimation();
             
-            // Gerçek bir resim kullanmak istersen burayı '<img src="resim_linki.png" width="40">' yapabilirsin.
-            kokina.innerHTML = '🍒🌿'; 
-            
-            // Rastgele yatay pozisyon ve hafif farklı animasyon süreleri
-            kokina.style.left = Math.random() * 100 + 'vw';
-            kokina.style.animationDuration = (Math.random() * 2 + 3) + 's'; 
-            
-            document.body.appendChild(kokina);
-
-            // İşlevi biten elementi DOM'dan temizle
-            setTimeout(() => {
-                kokina.remove();
-            }, 5000);
+            // 2. Kokinaları fırlat
+            startKokinaBurst();
         }
 
-        // Sayfa açıldığında kokinaları belli aralıklarla fırlat (ilk 3 saniye boyunca)
-        const burst = setInterval(() => {
-            createKokina();
-            createKokina();
-        }, 200);
+        // --- Arka Plan Bokeh Efekti ---
+        function createBackgroundAnimation() {
+            const bgContainer = document.getElementById('bgAnimation');
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('bg-dot');
+                
+                // Rastgele boyut (4px - 12px)
+                const size = (Math.random() * 8 + 4) + 'px';
+                dot.style.width = size;
+                dot.style.height = size;
+                
+                // Rastgele yatay pozisyon
+                dot.style.left = Math.random() * 100 + 'vw';
+                dot.style.top = Math.random() * 100 + 'vh'; // Ekrana yayılması için top değeri
+                
+                // Rastgele animasyon süreleri ve gecikmeleri (scatter etkisi)
+                dot.style.animationDuration = (Math.random() * 10 + 10) + 's'; 
+                dot.style.animationDelay = (Math.random() * -20) + 's'; // Önceden başlamış gibi
+                
+                bgContainer.appendChild(dot);
+            }
+        }
 
-        setTimeout(() => clearInterval(burst), 3000);
+        // --- Kokina Efekti ---
+        function startKokinaBurst() {
+            function createKokina() {
+                const kokina = document.createElement('div');
+                kokina.classList.add('kokina');
+                kokina.innerHTML = '🍒'; // Kokina kirazı
+                kokina.style.left = Math.random() * 100 + 'vw';
+                kokina.style.animationDuration = (Math.random() * 2 + 3) + 's'; 
+                document.body.appendChild(kokina);
+                setTimeout(() => kokina.remove(), 5000); // Temizle
+            }
 
+            // Sayfa açıldığında kokinaları belli aralıklarla fırlat (ilk 3 saniye boyunca)
+            const burst = setInterval(() => {
+                createKokina();
+                createKokina();
+            }, 200);
+            setTimeout(() => clearInterval(burst), 3000);
+        }
 
         // --- Zarf Mantığı ---
         const btn = document.getElementById('clickMe');
