@@ -61,7 +61,7 @@
         #envelope-container {
             display: none; 
             position: relative;
-            margin-top: 40px;
+            margin-top: 80px; /* KAĞIT UZADIĞI İÇİN BAŞLIĞA ÇARPMASIN DİYE BOŞLUK ARTTIRILDI */
             width: 300px; 
             height: 190px; 
             z-index: 10; 
@@ -84,7 +84,7 @@
             bottom: 10px; 
             left: 2.5%;
             width: 95%;
-            height: 280px; /* UZATILDI: Metin sığsın diye 240px -> 280px */
+            height: 340px; /* DİKKAT: Metin taşmasın diye kağıt iyice uzatıldı (280px -> 340px) */
             background-color: #fffaf0;
             z-index: 2; 
             padding: 20px; 
@@ -99,7 +99,7 @@
             /* Kâğıt başta tamamen gizli */
             opacity: 0; 
             visibility: hidden;
-            transform: translateY(40px); 
+            transform: translateY(60px); /* Başlangıçta iyice aşağıda saklansın */
             transition: transform 1.2s ease-in-out, opacity 0.5s ease-in; 
         }
 
@@ -147,7 +147,7 @@
         .pull-paper .paper {
             opacity: 1; 
             visibility: visible;
-            transform: translateY(-245px); /* Kâğıt uzadığı için daha fazla yukarı çıkmalı: -205px -> -245px */
+            transform: translateY(-100px); /* Kağıt uzadığı için havaya uçmasın, dibi zarfın içinde kalsın diye ayarlandı */
         }
     </style>
 </head>
@@ -260,9 +260,4 @@
                     envContainer.classList.add('pull-paper');
                 }, 600); 
 
-            }, 500); 
-        });
-    </script>
-
-</body>
-</html>
+            }, 500
