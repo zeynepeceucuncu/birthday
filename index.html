@@ -7,7 +7,7 @@
     <style>
         /* Genel Sayfa Ayarları */
         body {
-            background-color: #ffb6c1; /* Tatlı pembe arka plan */
+            background-color: #ffb6c1; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden; 
             margin: 0;
@@ -20,7 +20,7 @@
             position: relative;
         }
 
-        /* --- Kalp Canvas (Animasyon) --- */
+        /* --- Kalp Canvas --- */
         #heartCanvas {
             position: absolute;
             top: 0;
@@ -31,7 +31,6 @@
             pointer-events: none; 
         }
 
-        /* Başlık Texti */
         h1 {
             color: #d81b60;
             font-size: 3rem;
@@ -39,10 +38,12 @@
             margin-bottom: 20px;
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            position: relative;
         }
 
-        /* Buton Tasarımı */
+        /* Buton Tasarımı - Tıklanmayı garantilemek için en üste alındı */
         #clickMe {
+            position: relative;
             padding: 15px 30px;
             font-size: 1.2rem;
             background-color: #ff69b4; 
@@ -50,25 +51,24 @@
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            z-index: 10;
+            z-index: 999; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: transform 0.2s, background-color 0.2s;
         }
         #clickMe:hover { background-color: #ff1493; }
         #clickMe:active { transform: scale(0.95); }
 
-        /* --- Gelişmiş Zarf Tasarımı (Kapalıdan Açığa) --- */
+        /* --- Zarf Tasarımı --- */
         #envelope-container {
             display: none; 
             position: relative;
-            margin-top: 80px; /* KAĞIT UZADIĞI İÇİN BAŞLIĞA ÇARPMASIN DİYE BOŞLUK ARTTIRILDI */
+            margin-top: 80px; 
             width: 300px; 
             height: 190px; 
             z-index: 10; 
             perspective: 1000px; 
         }
 
-        /* Katman 1: Zarfın Arka Paneli */
         .envelope-back {
             position: absolute;
             bottom: 0; left: 0;
@@ -78,13 +78,13 @@
             z-index: 1; 
         }
 
-        /* Katman 2: Mektup Kâğıdı (ORTADA VE BAŞLANGIÇTA GİZLİ) */
+        /* Mektup Kâğıdı (ORTADA VE BAŞLANGIÇTA GİZLİ) */
         .paper {
             position: absolute;
             bottom: 10px; 
             left: 2.5%;
             width: 95%;
-            height: 340px; /* DİKKAT: Metin taşmasın diye kağıt iyice uzatıldı (280px -> 340px) */
+            height: 340px; 
             background-color: #fffaf0;
             z-index: 2; 
             padding: 20px; 
@@ -96,14 +96,12 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             
-            /* Kâğıt başta tamamen gizli */
             opacity: 0; 
             visibility: hidden;
-            transform: translateY(60px); /* Başlangıçta iyice aşağıda saklansın */
+            transform: translateY(60px); 
             transition: transform 1.2s ease-in-out, opacity 0.5s ease-in; 
         }
 
-        /* Katman 3: Zarfın Ön Paneli (Alt Cep) */
         .envelope-front {
             position: absolute;
             bottom: 0; left: 0;
@@ -124,7 +122,6 @@
             z-index: 3;
         }
 
-        /* Katman 4: Zarfın Üst Kapağı (Açılıp kapanan kısım) */
         .envelope-flap {
             position: absolute;
             top: 0; left: 0;
@@ -137,17 +134,16 @@
             transition: transform 0.6s ease-in-out, z-index 0s 0.3s;
         }
 
-        /* Animasyon 1: Kapağın Açılması */
+        /* Animasyonlar */
         .open-flap .envelope-flap {
             transform: rotateX(180deg); 
             z-index: 1; 
         }
 
-        /* Animasyon 2: Mektubun Çıkması (Görünür olup yukarı kayar) */
         .pull-paper .paper {
             opacity: 1; 
             visibility: visible;
-            transform: translateY(-100px); /* Kağıt uzadığı için havaya uçmasın, dibi zarfın içinde kalsın diye ayarlandı */
+            transform: translateY(-100px); 
         }
     </style>
 </head>
@@ -170,9 +166,11 @@
     </div>
 
     <script>
-        // --- Yavaş ve Zarif Kalp Animasyonu ---
+        // Kalp Animasyonu
         function startHearts() {
             const canvas = document.getElementById('heartCanvas');
+            if (!canvas) return; // Hata önleyici güvenlik kilidi
+            
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -184,80 +182,6 @@
                 constructor() {
                     this.x = Math.random() * canvas.width;
                     this.y = canvas.height + Math.random() * 500;
-                    
-                    this.velocity = {
-                        y: -(Math.random() * 1.5 + 0.5) 
-                    };
-                    
+                    this.velocity = { y: -(Math.random() * 1.5 + 0.5) };
                     this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.size = Math.random() * 15 + 10; 
-                    this.opacity = Math.random() * 0.5 + 0.5; 
-                    
-                    this.sway = Math.random() * Math.PI * 2; 
-                    this.swaySpeed = Math.random() * 0.02 + 0.01; 
-                }
-
-                draw() {
-                    ctx.save();
-                    ctx.globalAlpha = this.opacity;
-                    ctx.fillStyle = this.color;
-                    ctx.font = this.size + "px Arial";
-                    ctx.textAlign = "center";
-                    let currentX = this.x + Math.sin(this.sway) * 20; 
-                    ctx.fillText("❤", currentX, this.y);
-                    ctx.restore();
-                }
-
-                update() {
-                    this.y += this.velocity.y;
-                    this.sway += this.swaySpeed;
-                    
-                    if (this.y < -50) {
-                        this.y = canvas.height + 50;
-                        this.x = Math.random() * canvas.width;
-                    }
-                }
-            }
-
-            for (let i = 0; i < 60; i++) {
-                particles.push(new Heart());
-            }
-
-            function animate() {
-                requestAnimationFrame(animate);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                particles.forEach(particle => {
-                    particle.update();
-                    particle.draw();
-                });
-            }
-
-            animate();
-
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            });
-        }
-
-        // --- Adım Adım Zarf Açılma Mantığı ---
-        const btn = document.getElementById('clickMe');
-        const envContainer = document.getElementById('envelope-container');
-
-        btn.addEventListener('click', () => {
-            btn.style.display = 'none';
-            envContainer.style.display = 'block';
-            
-            startHearts(); 
-            
-            // 1. ADIM: Zarf kapağını aç (Kâğıt bu sırada hala görünmez)
-            setTimeout(() => {
-                envContainer.classList.add('open-flap');
-                
-                // 2. ADIM: Kapak tamamen açıldıktan SONRA kâğıdı görünür yap ve yukarı kaydır
-                setTimeout(() => {
-                    envContainer.classList.add('pull-paper');
-                }, 600); 
-
-            }, 500
+                    this.size = Math.random()
